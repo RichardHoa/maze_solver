@@ -15,6 +15,7 @@ def main():
     # print(maze.cells)
     maze.draw_cells()
     # cell.draw_move(cell_2,False)
+    maze.break_entrance_and_exit()
     win.wait_for_close()
 
 

@@ -1,6 +1,7 @@
 from tkinter import Tk, BOTH, Canvas
 
 import time
+import math
 
 
 class Window:
@@ -56,7 +57,7 @@ class Line:
 
 
 class Cell:
-    def __init__(self, window, x1, y1, x2, y2):
+    def __init__(self, x1, y1, x2, y2, window=None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -72,17 +73,36 @@ class Cell:
             self.window.draw_line(
                 Line(Point(self.x1, self.y1), Point(self.x1, self.y2))
             )
+        elif self.has_left_wall == False:
+            self.window.draw_line(
+                Line(Point(self.x1, self.y1), Point(self.x1, self.y2)), "white"
+            )
+
         if self.has_right_wall:
             self.window.draw_line(
                 Line(Point(self.x2, self.y1), Point(self.x2, self.y2))
             )
+        elif self.has_right_wall == False:
+            self.window.draw_line(
+                Line(Point(self.x2, self.y1), Point(self.x2, self.y2)), "white"
+            )
+
         if self.has_top_wall:
             self.window.draw_line(
                 Line(Point(self.x1, self.y1), Point(self.x2, self.y1))
             )
+        elif self.has_top_wall == False:
+            self.window.draw_line(
+                Line(Point(self.x1, self.y1), Point(self.x2, self.y1)), "white"
+            )
+
         if self.has_bottom_wall:
             self.window.draw_line(
                 Line(Point(self.x1, self.y2), Point(self.x2, self.y2))
+            )
+        elif self.has_bottom_wall == False:
+            self.window.draw_line(
+                Line(Point(self.x1, self.y2), Point(self.x2, self.y2)), "white"
             )
 
     def draw_move(self, to_cell, undo=False):
@@ -105,7 +125,7 @@ class Maze:
         num_cols,
         cell_size_x,
         cell_size_y,
-        window,
+        window=None,
     ):
         self.x1 = x1
         self.y1 = y1
@@ -122,22 +142,29 @@ class Maze:
             for j in range(self.num_rows):
                 columns_cell.append(
                     Cell(
-                        self.window,
                         self.x1 + i * self.cell_size_x,
                         self.y1 + j * self.cell_size_y,
                         self.x1 + (i + 1) * self.cell_size_x,
                         self.y1 + (j + 1) * self.cell_size_y,
+                        self.window,
                     )
                 )
             self.cells.append(columns_cell)
-    
+
     def draw_cells(self):
         for i in range(self.num_cols):
             for cell in self.cells[i]:
                 cell.draw()
                 self.animate()
-    
+
     def animate(self):
         self.window.redraw()
         time.sleep(0.05)
-        
+
+    def break_entrance_and_exit(self):
+        first_cell = self.cells[0][0]
+        last_cell = self.cells[self.num_cols - 1][self.num_rows - 1]
+        first_cell.has_top_wall = False
+        last_cell.has_bottom_wall = False
+        first_cell.draw()
+        last_cell.draw()
