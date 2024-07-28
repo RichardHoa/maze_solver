@@ -1,5 +1,7 @@
 from tkinter import Tk, BOTH, Canvas
 
+import time
+
 
 class Window:
 
@@ -83,11 +85,59 @@ class Cell:
                 Line(Point(self.x1, self.y2), Point(self.x2, self.y2))
             )
 
-    def draw_move(self, to_cell,undo=False):
+    def draw_move(self, to_cell, undo=False):
         origin_cell_center = Point((self.x1 + self.x2) / 2, (self.y1 + self.y2) / 2)
-        to_cell_center = Point((to_cell.x1 + to_cell.x2) / 2, (to_cell.y1 + to_cell.y2) / 2)
+        to_cell_center = Point(
+            (to_cell.x1 + to_cell.x2) / 2, (to_cell.y1 + to_cell.y2) / 2
+        )
         if undo == False:
-            self.window.draw_line(Line(origin_cell_center,to_cell_center),"red")
+            self.window.draw_line(Line(origin_cell_center, to_cell_center), "red")
         else:
-            self.window.draw_line(Line(to_cell_center,origin_cell_center),"black")
-            
+            self.window.draw_line(Line(to_cell_center, origin_cell_center), "black")
+
+
+class Maze:
+    def __init__(
+        self,
+        x1,
+        y1,
+        num_rows,
+        num_cols,
+        cell_size_x,
+        cell_size_y,
+        window,
+    ):
+        self.x1 = x1
+        self.y1 = y1
+        self.num_rows = num_rows
+        self.num_cols = num_cols
+        self.cell_size_x = cell_size_x
+        self.cell_size_y = cell_size_y
+        self.window = window
+        self.cells = []
+
+    def create_cells(self):
+        for i in range(self.num_cols):
+            columns_cell = []
+            for j in range(self.num_rows):
+                columns_cell.append(
+                    Cell(
+                        self.window,
+                        self.x1 + i * self.cell_size_x,
+                        self.y1 + j * self.cell_size_y,
+                        self.x1 + (i + 1) * self.cell_size_x,
+                        self.y1 + (j + 1) * self.cell_size_y,
+                    )
+                )
+            self.cells.append(columns_cell)
+    
+    def draw_cells(self):
+        for i in range(self.num_cols):
+            for cell in self.cells[i]:
+                cell.draw()
+                self.animate()
+    
+    def animate(self):
+        self.window.redraw()
+        time.sleep(0.05)
+        
