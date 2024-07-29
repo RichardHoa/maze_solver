@@ -10,7 +10,7 @@ class Window:
         self.width = width
         self.height = height
         self.root = Tk()
-        self.root.title("Maze Solver")  # Hardcoded title
+        self.root.title("Maze solver by Thái Hoà") 
         self.canvas = Canvas(
             self.root, width=self.width, height=self.height, bg="white"
         )
@@ -165,11 +165,13 @@ class Maze:
         for i in range(self.num_cols):
             for cell in self.cells[i]:
                 cell.draw()
-                self.animate()
+                # self.animate()
+        
+
 
     def animate(self):
         self.window.redraw()
-        # time.sleep(0.000001)
+        time.sleep(0.01)
 
     def break_entrance_and_exit(self):
         first_cell = self.cells[0][0]
@@ -181,6 +183,7 @@ class Maze:
 
     def break_walls_r(self, i, j):
         self.cells[i][j].visited = True
+        # self.animate()
 
         while True:
             list = []
